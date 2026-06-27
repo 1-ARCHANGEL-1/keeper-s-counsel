@@ -176,11 +176,15 @@ transition: "transform 500ms ease",
 
 <span
 
-className="absolute rounded-full bg-foreground/85"
+className="absolute rounded-full"
 
 style={{
 
 width: eyeSize, height: eyeSize,
+
+background: "var(--coral)",
+
+boxShadow: "0 0 8px color-mix(in oklab, var(--coral) 70%, transparent), 0 0 4px color-mix(in oklab, white 60%, transparent)",
 
 left: cx + size * eyeGap - eyeSize / 2,
 
