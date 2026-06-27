@@ -71,31 +71,32 @@ export const getTavusTranscript = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ conversation_id: z.string().min(1) }).parse(d))
   .handler(async ({ data }) => {
     const apiKey = getKey();
-    const res = await fetch(
-      `${TAVUS_BASE}/conversations/${encodeURIComponent(data.conversation_id)}?verbose=true`,
-      { headers: { "x-api-key": apiKey } },
-    );
-    if (!res.ok) {
-      return { transcriptText: "" };
+    const url = `${TAVUS_BASE}/conversations/${encodeURIComponent(data.conversation_id)}?verbose=true`;
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+      if (attempt > 0) await sleep(2000);
+      const res = await fetch(url, { headers: { "x-api-key": apiKey } });
+      if (!res.ok) continue;
+      const j = (await res.json()) as Record<string, unknown>;
+      const transcript = (j.transcript ?? (j.events as unknown)) as unknown;
+      if (!Array.isArray(transcript) || transcript.length === 0) continue;
+      const lines: string[] = [];
+      for (const entry of transcript) {
+        if (!entry || typeof entry !== "object") continue;
+        const e = entry as Record<string, unknown>;
+        const role = String(e.role ?? e.speaker ?? e.participant ?? "").toLowerCase();
+        const text = String(e.content ?? e.text ?? e.message ?? "").trim();
+        if (!text) continue;
+        const isUser =
+          role === "user" ||
+          role === "human" ||
+          role === "participant" ||
+          role.includes("user");
+        if (isUser) lines.push(text);
+      }
+      if (lines.length > 0) return { transcriptText: lines.join("\n") };
     }
-    const j = (await res.json()) as Record<string, unknown>;
-    const transcript = (j.transcript ?? (j.events as unknown)) as unknown;
-    if (!Array.isArray(transcript) || transcript.length === 0) {
-      return { transcriptText: "" };
-    }
-    const lines: string[] = [];
-    for (const entry of transcript) {
-      if (!entry || typeof entry !== "object") continue;
-      const e = entry as Record<string, unknown>;
-      const role = String(e.role ?? e.speaker ?? e.participant ?? "").toLowerCase();
-      const text = String(e.content ?? e.text ?? e.message ?? "").trim();
-      if (!text) continue;
-      const isUser =
-        role === "user" ||
-        role === "human" ||
-        role === "participant" ||
-        role.includes("user");
-      if (isUser) lines.push(text);
-    }
-    return { transcriptText: lines.join("\n") };
+    return { transcriptText: "" };
   });
+
