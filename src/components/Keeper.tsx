@@ -154,21 +154,19 @@ boxShadow: `0 20px 60px -20px ${p.glow}, inset -10px -20px 40px -10px color-mix(
 
 className="absolute rounded-full"
 
-style={{
+          style={{
 
-width: eyeSize, height: eyeSize,
+            width: eyeSize, height: eyeSize,
 
-background: "var(--coral)",
+            background: "color-mix(in oklab, var(--foreground) 80%, var(--coral))",
 
-boxShadow: "0 0 8px color-mix(in oklab, var(--coral) 70%, transparent), 0 0 4px color-mix(in oklab, white 60%, transparent)",
+            left: cx - size * eyeGap - eyeSize / 2,
 
-left: cx - size * eyeGap - eyeSize / 2,
+            top: size * eyeY,
 
-top: size * eyeY,
+            transform: `scaleY(${eyeScaleY})`,
 
-transform: `scaleY(${eyeScaleY})`,
-
-transition: "transform 500ms ease",
+            transition: "transform 500ms ease",
 
           }}
 
@@ -178,21 +176,19 @@ transition: "transform 500ms ease",
 
 className="absolute rounded-full"
 
-style={{
+          style={{
 
-width: eyeSize, height: eyeSize,
+            width: eyeSize, height: eyeSize,
 
-background: "var(--coral)",
+            background: "color-mix(in oklab, var(--foreground) 80%, var(--coral))",
 
-boxShadow: "0 0 8px color-mix(in oklab, var(--coral) 70%, transparent), 0 0 4px color-mix(in oklab, white 60%, transparent)",
+            left: cx + size * eyeGap - eyeSize / 2,
 
-left: cx + size * eyeGap - eyeSize / 2,
+            top: size * eyeY,
 
-top: size * eyeY,
+            transform: `scaleY(${eyeScaleY})`,
 
-transform: `scaleY(${eyeScaleY})`,
-
-transition: "transform 500ms ease",
+            transition: "transform 500ms ease",
 
           }}
 
@@ -224,21 +220,19 @@ transition: "transform 500ms ease",
 
 >
 
-  <path
+    <path
 
-    d="M 18 13 Q 50 27 82 13"
+      d="M 18 13 Q 50 27 82 13"
 
-    stroke="var(--coral)"
+      stroke="color-mix(in oklab, var(--foreground) 80%, var(--coral))"
 
-    strokeWidth="5"
+      strokeWidth="5"
 
-    strokeLinecap="round"
+      strokeLinecap="round"
 
-    fill="none"
+      fill="none"
 
-    style={{ filter: "drop-shadow(0 0 5px color-mix(in oklab, var(--coral) 70%, transparent))" }}
-
-  />
+    />
 
 </svg>
 
