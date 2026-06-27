@@ -204,7 +204,7 @@ transition: "transform 500ms ease",
 
     left: cx - size * 0.18,
 
-    top: size * 0.60,
+    top: size * 0.58,
 
     transition: "all 500ms ease",
 
@@ -218,7 +218,7 @@ transition: "transform 500ms ease",
 
   <path
 
-    d="M 10 12 Q 50 38 90 12"
+    d="M 18 13 Q 50 27 82 13"
 
     stroke="currentColor"
 
