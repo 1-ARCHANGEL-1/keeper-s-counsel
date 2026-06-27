@@ -21,6 +21,7 @@ function Talk() {
   const navigate = useNavigate();
   const startFn = useServerFn(startTavusConversation);
   const endFn = useServerFn(endTavusConversation);
+  const transcriptFn = useServerFn(getTavusTranscript);
 
   const [names, setNames] = useState<{ self: string; other: string }>({
     self: "Person A",
