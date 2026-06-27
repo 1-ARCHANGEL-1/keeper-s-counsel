@@ -190,47 +190,47 @@ transition: "transform 500ms ease",
 
 />
 
-{/* mouth (svg curve) */}
+{/* mouth — fixed smile arc, no math */}
 
 <svg
 
-className="absolute"
+  className="absolute"
 
-width={size * mouthW * 2}
+  width={size * 0.36}
 
-height={size * 0.1}
+  height={size * 0.12}
 
-style={{
+  style={{
 
-left: cx - size * mouthW,
+    left: cx - size * 0.18,
 
-top: size * mouthY,
+    top: size * 0.60,
 
-transition: "all 500ms ease",
+    transition: "all 500ms ease",
 
-          }}
+  }}
 
-viewBox="0 0 100 30"
+  viewBox="0 0 100 40"
 
-fill="none"
+  fill="none"
 
 >
 
-<path
+  <path
 
-d={`M 8 15 Q 50 ${15 - mouthCurve * 200} 92 15`}
+    d="M 10 12 Q 50 38 90 12"
 
-stroke="currentColor"
+    stroke="currentColor"
 
-strokeWidth="4"
+    strokeWidth="5"
 
-strokeLinecap="round"
+    strokeLinecap="round"
 
-className="text-foreground/80"
+    fill="none"
 
-style={{ transition: "d 500ms ease" }}
+    className="text-foreground/80"
 
-/>
+  />
 
 </svg>
 
