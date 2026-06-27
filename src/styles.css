@@ -35,7 +35,7 @@
   --color-sand: var(--sand);
   --color-sand-deep: var(--sand-deep);
   --font-display: "Fredoka", "Quicksand", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "Figtree", system-ui, sans-serif;
 }
 
 :root {
@@ -52,6 +52,7 @@
   --periwinkle: oklch(0.625 0.115 275);      /* #6B7FD7 */
   --sand: oklch(0.895 0.024 70);             /* #E8DDD0 */
   --sand-deep: oklch(0.82 0.03 70);
+  --sage: #9CAF94;
 
   --primary: var(--coral);
   --primary-foreground: oklch(0.99 0.01 75);
