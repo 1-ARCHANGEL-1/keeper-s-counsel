@@ -56,7 +56,7 @@ function Talk() {
         setError(
           msg.includes("TAVUS_API_KEY")
             ? "Keeper isn't quite ready — the Tavus API key hasn't been added yet. Once it's in Project Settings → Secrets, this will work."
-            : "We couldn't reach Keeper just now. Please try again in a moment.",
+            : `Keeper couldn't start a session: ${msg}`,
         );
         setStatus("error");
       }
@@ -141,7 +141,7 @@ function Talk() {
                       setError(
                         msg.includes("TAVUS_API_KEY")
                           ? "Keeper isn't quite ready — the Tavus API key hasn't been added yet."
-                          : "We couldn't reach Keeper just now. Please try again in a moment.",
+                          : `Keeper couldn't start a session: ${msg}`,
                       );
                       setStatus("error");
                     });
