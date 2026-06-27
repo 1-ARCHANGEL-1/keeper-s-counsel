@@ -47,7 +47,8 @@ export function loadState(): KeeperState {
       A: { ...initial.A, ...(parsed.A ?? {}) },
       B: { ...initial.B, ...(parsed.B ?? {}) },
     };
-
+  } catch {
+    return initial;
   }
 }
 
