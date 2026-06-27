@@ -76,14 +76,21 @@ function Talk() {
     setStatus("ending");
     const id = conversationIdRef.current;
     conversationIdRef.current = null;
+    let transcriptText = "";
     if (id) {
       try {
         await endFn({ data: { conversation_id: id } });
       } catch (e) {
         console.error("end conversation failed", e);
       }
+      try {
+        const r = await transcriptFn({ data: { conversation_id: id } });
+        transcriptText = r.transcriptText ?? "";
+      } catch (e) {
+        console.error("transcript fetch failed", e);
+      }
     }
-    updatePerson(who, { done: true });
+    updatePerson(who, { done: true, transcript: transcriptText });
     const s = loadState();
     if (s.A.done && s.B.done) {
       navigate({ to: "/summary", search: { who } });
