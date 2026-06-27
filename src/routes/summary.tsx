@@ -39,13 +39,13 @@ function Summary() {
         return;
       }
 
-      const shareable = otherState.turns
-        .filter((t) => t.role === "user" && t.tag === "shareable")
-        .map((t) => ({ text: t.text, note: t.note }));
-
       try {
         const text = await generate({
-          data: { forName: selfState.name, aboutName: otherState.name, shareable },
+          data: {
+            forName: selfState.name,
+            aboutName: otherState.name,
+            transcript: otherState.transcript ?? "",
+          },
         });
         if (!mounted) return;
         const next = { ...s, summary: { for: who, text } as const };

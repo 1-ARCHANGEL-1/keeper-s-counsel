@@ -91,20 +91,26 @@ export const keeperReply = createServerFn({ method: "POST" })
 const SummaryInput = z.object({
   forName: z.string(),         // person who will READ the summary (Person B)
   aboutName: z.string(),       // person whose side it summarizes (Person A)
-  shareable: z.array(z.object({ text: z.string(), note: z.string().optional() })),
+  transcript: z.string(),      // raw transcript text of what {aboutName} said to Keeper
 });
 
 const SUMMARY_SYSTEM = `You are Keeper. You are writing a short, warm note for {forName} about what's worth knowing from {aboutName}'s side of a misunderstanding.
 
-Rules:
-- 3-5 sentences, plain language.
-- Sound like a caring mutual friend explaining context — never like a report, never with headings or bullets.
-- Never blame either person. Never quote ugly venting. Soften, don't sharpen.
-- Focus on the *why* behind {aboutName}'s actions, what they wished {forName} knew, and any care or intention that wasn't visible.
-- Do NOT include private content, complaints about {forName}'s character, or things said in pure frustration.
+You will be given the raw transcript of what {aboutName} said out loud to you during a private video conversation. Do this in one pass, silently:
+1. Read the transcript and decide what's actually fair and relevant for {forName} to hear — the reasons, context, intentions, or care behind {aboutName}'s actions, and what they wished {forName} understood.
+2. Set aside anything that's just venting, unflattering remarks about {forName}'s character, gossip, or things said in pure frustration. Do not include those.
+3. Then write the note.
+
+Rules for the note:
+- 3-5 sentences, plain language. No headings, no bullets, no preamble, no quotes around it.
+- Sound like a caring mutual friend explaining context — never like a report or transcript.
+- Never quote {aboutName} verbatim. Paraphrase. Soften, don't sharpen. Never blame either person.
+- Focus on the *why* and the underlying care or intention that may not have been visible to {forName}.
 - End with one warm, open-ended sentence — something like "What you do with this is up to you both."
 
-Return plain text. No quotes, no preamble.`;
+If the transcript is empty, only a sentence or two, or doesn't contain anything meaningful to pass along, do NOT fabricate. Instead return a single short, graceful line such as: "{aboutName} didn't get to share much this time — there may not be much to pass along yet."
+
+Return plain text only.`;
 
 export const keeperSummary = createServerFn({ method: "POST" })
   .inputValidator((d) => SummaryInput.parse(d))
@@ -113,15 +119,18 @@ export const keeperSummary = createServerFn({ method: "POST" })
       .replaceAll("{forName}", data.forName)
       .replaceAll("{aboutName}", data.aboutName);
 
-    const material = data.shareable
-      .map((s, i) => `(${i + 1}) ${s.note?.trim() || s.text}`)
-      .join("\n");
+    const transcript = data.transcript.trim();
 
     const text = await chat({
       model: MODEL,
       messages: [
         { role: "system", content: sys },
-        { role: "user", content: `Shareable context from ${data.aboutName}:\n\n${material || "(nothing notable was marked shareable)"}` },
+        {
+          role: "user",
+          content: transcript
+            ? `Raw transcript of what ${data.aboutName} said to Keeper:\n\n${transcript}`
+            : `(${data.aboutName} did not share anything in their session — the transcript is empty.)`,
+        },
       ],
     });
     return text.trim();

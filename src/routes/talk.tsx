@@ -4,7 +4,7 @@ import { z } from "zod";
 import { useServerFn } from "@tanstack/react-start";
 import { Keeper } from "@/components/Keeper";
 import { loadState, updatePerson, type Speaker } from "@/lib/keeper-state";
-import { startTavusConversation, endTavusConversation } from "@/lib/tavus.functions";
+import { startTavusConversation, endTavusConversation, getTavusTranscript } from "@/lib/tavus.functions";
 import { ArrowLeft } from "lucide-react";
 
 const searchSchema = z.object({ who: z.enum(["A", "B"]).catch("A") });
@@ -21,6 +21,7 @@ function Talk() {
   const navigate = useNavigate();
   const startFn = useServerFn(startTavusConversation);
   const endFn = useServerFn(endTavusConversation);
+  const transcriptFn = useServerFn(getTavusTranscript);
 
   const [names, setNames] = useState<{ self: string; other: string }>({
     self: "Person A",
@@ -75,14 +76,21 @@ function Talk() {
     setStatus("ending");
     const id = conversationIdRef.current;
     conversationIdRef.current = null;
+    let transcriptText = "";
     if (id) {
       try {
         await endFn({ data: { conversation_id: id } });
       } catch (e) {
         console.error("end conversation failed", e);
       }
+      try {
+        const r = await transcriptFn({ data: { conversation_id: id } });
+        transcriptText = r.transcriptText ?? "";
+      } catch (e) {
+        console.error("transcript fetch failed", e);
+      }
     }
-    updatePerson(who, { done: true });
+    updatePerson(who, { done: true, transcript: transcriptText });
     const s = loadState();
     if (s.A.done && s.B.done) {
       navigate({ to: "/summary", search: { who } });
