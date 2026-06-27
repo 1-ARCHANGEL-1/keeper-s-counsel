@@ -121,6 +121,8 @@ function PersonCard({
           onChange={(e) => onName(e.target.value)}
           className="mt-1 w-full bg-transparent text-lg font-display font-medium outline-none"
           aria-label="Your name"
+          autoComplete="off"
+          name={accent === "coral" ? "personAName" : "personBName"}
         />
         {done && <div className="mt-1 text-xs text-foreground/50">already talked to Keeper</div>}
       </div>
