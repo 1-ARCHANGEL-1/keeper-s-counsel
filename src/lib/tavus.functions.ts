@@ -4,7 +4,7 @@ import { z } from "zod";
 // ⚠️ REPLACE_ME: paste your Tavus persona_id once you've created the Keeper persona
 // in the Tavus dashboard (https://platform.tavus.io). Until then, calls will fail
 // with a clear error from Tavus's API.
-const PERSONA_ID_PLACEHOLDER = "p6bd1422a7d1";
+const PERSONA_ID_PLACEHOLDER = "p2fbd605";
 
 const TAVUS_BASE = "https://tavusapi.com/v2";
 
