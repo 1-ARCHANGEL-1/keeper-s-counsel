@@ -41,64 +41,67 @@ function Who() {
   }
 
   return (
-    
+    <main className="min-h-screen flex items-center justify-center px-6 py-12">
       {/* Back to home — top-left, consistent with the /talk page */}
-      
-         Home
-      
+      <Link
+        to="/"
+        className="fixed left-5 top-5 z-50 inline-flex items-center gap-1.5 rounded-full bg-background/70 px-4 py-2 text-sm text-foreground/60 backdrop-blur-sm transition-colors hover:text-foreground/90"
+      >
+        <ArrowLeft className="size-4" /> Home
+      </Link>
 
-      
-
-
-        
-      
-
-        
-      
-
+      <div className="w-full max-w-lg page-in">
+        <div className="flex justify-center">
+          <Keeper mood="rest" size={140} />
+        </div>
+        <h1 className="mt-8 text-center font-display text-3xl sm:text-4xl font-semibold">
           Who's talking first?
-        
-
-        
-      
-
+        </h1>
+        <p className="mt-4 text-center text-foreground/70 leading-relaxed">
           Keeper will listen to your side first. Nothing is shared until you're both done.
-        
+        </p>
 
-
-        
-      
-
-           start("A")}
+        <div className="mt-10 grid gap-4">
+          <PersonCard
+            label="I'm"
+            name={nameA}
+            onName={setNameA}
+            done={doneA}
+            onStart={() => start("A")}
             accent="coral"
           />
-           start("B")}
+          <PersonCard
+            label="I'm"
+            name={nameB}
+            onName={setNameB}
+            done={doneB}
+            onStart={() => start("B")}
             accent="periwinkle"
           />
-        
-
+        </div>
 
         {doneA && doneB && (
-          
-
-
-            
+          <div className="mt-8 text-center">
+            <Link
+              to="/summary"
+              search={{ who: "B" }}
+              className="inline-flex rounded-full bg-accent px-6 py-3 text-sm text-accent-foreground"
+            >
               See what Keeper shared
-            
-          
-
+            </Link>
+          </div>
         )}
 
-        
-      
-
-          
+        <div className="mt-10 text-center">
+          <button
+            onClick={startFresh}
+            className="text-xs text-foreground/50 hover:text-foreground/80 transition-colors"
+          >
             clear and start over
-          
-        
-      
-
-    
+          </button>
+        </div>
+      </div>
+    </main>
   );
 }
 
@@ -118,33 +121,23 @@ function PersonCard({
     ? "bg-[color:var(--coral)] text-primary-foreground"
     : "bg-[color:var(--periwinkle)] text-accent-foreground";
   return (
-    
-
-
-      
-
-
-        
-{label}
-
-
-         onName(e.target.value)}
+    <div className={`rounded-3xl bg-card border border-border/60 p-5 sm:p-6 flex items-center gap-4 transition-shadow duration-500 ${ring} focus-within:ring-2 ring-offset-2 ring-offset-background`}>
+      <div className="flex-1">
+        <div className="text-xs uppercase tracking-wider text-foreground/50">{label}</div>
+        <input
+          value={name}
+          onChange={(e) => onName(e.target.value)}
           className="mt-1 w-full bg-transparent text-lg font-display font-medium outline-none"
           aria-label="Your name"
         />
-        {done && 
-
-already talked to Keeper
-
-}
-      
-
-
-      
+        {done && <div className="mt-1 text-xs text-foreground/50">already talked to Keeper</div>}
+      </div>
+      <button
+        onClick={onStart}
+        className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-500 hover:scale-[1.03] ${btn}`}
+      >
         {done ? "talk again" : "start"}
-      
-    
-
-
+      </button>
+    </div>
   );
 }
