@@ -74,29 +74,31 @@ export const getTavusTranscript = createServerFn({ method: "POST" })
     const url = `${TAVUS_BASE}/conversations/${encodeURIComponent(data.conversation_id)}?verbose=true`;
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < 6; attempt++) {
       if (attempt > 0) await sleep(2000);
       const res = await fetch(url, { headers: { "x-api-key": apiKey } });
       if (!res.ok) continue;
       const j = (await res.json()) as Record<string, unknown>;
-      const transcript = (j.transcript ?? (j.events as unknown)) as unknown;
+      const events = j.events;
+      if (!Array.isArray(events)) continue;
+      const ready = events.find(
+        (e) =>
+          e && typeof e === "object" &&
+          (e as Record<string, unknown>).event_type === "application.transcription_ready",
+      ) as { properties?: { transcript?: unknown } } | undefined;
+      const transcript = ready?.properties?.transcript;
       if (!Array.isArray(transcript) || transcript.length === 0) continue;
       const lines: string[] = [];
       for (const entry of transcript) {
         if (!entry || typeof entry !== "object") continue;
         const e = entry as Record<string, unknown>;
-        const role = String(e.role ?? e.speaker ?? e.participant ?? "").toLowerCase();
-        const text = String(e.content ?? e.text ?? e.message ?? "").trim();
-        if (!text) continue;
-        const isUser =
-          role === "user" ||
-          role === "human" ||
-          role === "participant" ||
-          role.includes("user");
-        if (isUser) lines.push(text);
+        if (e.role !== "user") continue;
+        const text = typeof e.content === "string" ? e.content.trim() : "";
+        if (text) lines.push(text);
       }
       if (lines.length > 0) return { transcriptText: lines.join("\n") };
     }
     return { transcriptText: "" };
   });
+
 
