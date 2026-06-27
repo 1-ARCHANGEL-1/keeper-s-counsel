@@ -32,7 +32,7 @@ export function Keeper({ mood = "rest", size = 220, className = "" }: KeeperProp
 
 const palette: Record<KeeperMood, { from: string; to: string; glow: string; breathe: string }> = {
 
-rest:       { from: "var(--sand)",       to: "var(--sand-deep)",  glow: "color-mix(in oklab, var(--sand-deep) 40%, transparent)",  breathe: "keeper-breathe" },
+rest:       { from: "color-mix(in oklab, var(--coral) 18%, var(--sand))", to: "color-mix(in oklab, var(--coral) 32%, var(--sand-deep))", glow: "color-mix(in oklab, var(--coral) 30%, transparent)", breathe: "keeper-breathe" },
 
 listening:  { from: "color-mix(in oklab, var(--periwinkle) 35%, var(--sand))",
 
