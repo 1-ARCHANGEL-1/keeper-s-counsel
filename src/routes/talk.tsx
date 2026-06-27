@@ -4,7 +4,7 @@ import { z } from "zod";
 import { useServerFn } from "@tanstack/react-start";
 import { Keeper } from "@/components/Keeper";
 import { loadState, updatePerson, type Speaker } from "@/lib/keeper-state";
-import { startTavusConversation, endTavusConversation } from "@/lib/tavus.functions";
+import { startTavusConversation, endTavusConversation, getTavusTranscript } from "@/lib/tavus.functions";
 import { ArrowLeft } from "lucide-react";
 
 const searchSchema = z.object({ who: z.enum(["A", "B"]).catch("A") });
