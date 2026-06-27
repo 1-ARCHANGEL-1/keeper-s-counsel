@@ -152,11 +152,15 @@ boxShadow: `0 20px 60px -20px ${p.glow}, inset -10px -20px 40px -10px color-mix(
 
 <span
 
-className="absolute rounded-full bg-foreground/85"
+className="absolute rounded-full"
 
 style={{
 
 width: eyeSize, height: eyeSize,
+
+background: "var(--coral)",
+
+boxShadow: "0 0 8px color-mix(in oklab, var(--coral) 70%, transparent), 0 0 4px color-mix(in oklab, white 60%, transparent)",
 
 left: cx - size * eyeGap - eyeSize / 2,
 
