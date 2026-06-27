@@ -49,7 +49,7 @@
   --popover-foreground: oklch(0.265 0.018 45);
 
   --coral: oklch(0.745 0.145 38);            /* #FF8C6B */
-  --periwinkle: oklch(0.625 0.115 275);      /* #6B7FD7 */
+  --periwinkle: oklch(0.625 0.12 255);      /* more blue */
   --sand: oklch(0.895 0.024 70);             /* #E8DDD0 */
   --sand-deep: oklch(0.82 0.03 70);
   --sage: #9CAF94;
