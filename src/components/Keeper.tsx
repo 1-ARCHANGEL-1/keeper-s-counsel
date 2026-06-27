@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 
 
 
-
 export type KeeperMood = "rest" | "listening" | "concerned" | "warm";
-
 
 
 
@@ -17,7 +15,6 @@ size?: number;
 className?: string;
 
 }
-
 
 
 
@@ -67,7 +64,6 @@ const p = palette[mood];
 
 
 
-
 // Eyes & mouth geometry shifts by mood
 
 const eyeY = mood === "concerned" ? 0.46 : 0.44;
@@ -82,17 +78,15 @@ const mouthY = 0.62;
 
 const mouthW = mood === "warm" ? 0.28 : mood === "concerned" ? 0.14 : mood === "rest" ? 0.20 : 0.18;
 
-// rest now carries a gentle, welcoming upturn (about 40% of the warm smile)
+// rest now carries a clearly visible, welcoming upturn (≈75% of the warm smile)
 
-const mouthCurve = mood === "warm" ? 0.06 : mood === "concerned" ? -0.04 : mood === "rest" ? 0.025 : 0.0;
-
+const mouthCurve = mood === "warm" ? 0.06 : mood === "concerned" ? -0.04 : mood === "rest" ? 0.045 : 0.0;
 
 
 
 const eyeSize = size * 0.055;
 
 const cx = size / 2;
-
 
 
 
@@ -247,7 +241,6 @@ style={{ transition: "d 500ms ease" }}
   );
 
 }
-
 
 
 
