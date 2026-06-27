@@ -14,7 +14,7 @@ export const Route = createFileRoute("/waiting")({
 });
 
 function Waiting() {
-  const { who } = Route.useSearch();
+  const who = Route.useSearch().who as Speaker;
   const other: Speaker = who === "A" ? "B" : "A";
   const navigate = useNavigate();
 

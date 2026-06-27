@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhoRouteImport } from './routes/who'
+import { Route as WaitingRouteImport } from './routes/waiting'
 import { Route as TalkRouteImport } from './routes/talk'
 import { Route as SummaryRouteImport } from './routes/summary'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const WhoRoute = WhoRouteImport.update({
   id: '/who',
   path: '/who',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WaitingRoute = WaitingRouteImport.update({
+  id: '/waiting',
+  path: '/waiting',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TalkRoute = TalkRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/summary': typeof SummaryRoute
   '/talk': typeof TalkRoute
+  '/waiting': typeof WaitingRoute
   '/who': typeof WhoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/summary': typeof SummaryRoute
   '/talk': typeof TalkRoute
+  '/waiting': typeof WaitingRoute
   '/who': typeof WhoRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/summary': typeof SummaryRoute
   '/talk': typeof TalkRoute
+  '/waiting': typeof WaitingRoute
   '/who': typeof WhoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/summary' | '/talk' | '/who'
+  fullPaths: '/' | '/summary' | '/talk' | '/waiting' | '/who'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/summary' | '/talk' | '/who'
-  id: '__root__' | '/' | '/summary' | '/talk' | '/who'
+  to: '/' | '/summary' | '/talk' | '/waiting' | '/who'
+  id: '__root__' | '/' | '/summary' | '/talk' | '/waiting' | '/who'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SummaryRoute: typeof SummaryRoute
   TalkRoute: typeof TalkRoute
+  WaitingRoute: typeof WaitingRoute
   WhoRoute: typeof WhoRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/who'
       fullPath: '/who'
       preLoaderRoute: typeof WhoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/waiting': {
+      id: '/waiting'
+      path: '/waiting'
+      fullPath: '/waiting'
+      preLoaderRoute: typeof WaitingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/talk': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SummaryRoute: SummaryRoute,
   TalkRoute: TalkRoute,
+  WaitingRoute: WaitingRoute,
   WhoRoute: WhoRoute,
 }
 export const routeTree = rootRouteImport
