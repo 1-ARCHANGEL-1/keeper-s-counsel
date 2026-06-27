@@ -89,27 +89,30 @@ export const keeperReply = createServerFn({ method: "POST" })
 
 // === Final summary ===========================================================
 const SummaryInput = z.object({
-  forName: z.string(),         // person who will READ the summary (Person B)
-  aboutName: z.string(),       // person whose side it summarizes (Person A)
-  transcript: z.string(),      // raw transcript text of what {aboutName} said to Keeper
+  forName: z.string(),          // person who will READ the summary
+  aboutName: z.string(),        // person whose side it summarizes
+  aboutTranscript: z.string(),  // raw transcript of {aboutName}'s session
+  selfTranscript: z.string(),   // raw transcript of {forName}'s own session (for common ground)
 });
 
 const SUMMARY_SYSTEM = `You are Keeper. You are writing a short, warm note for {forName} about what's worth knowing from {aboutName}'s side of a misunderstanding.
 
-You will be given the raw transcript of what {aboutName} said out loud to you during a private video conversation. Do this in one pass, silently:
-1. Read the transcript and decide what's actually fair and relevant for {forName} to hear — the reasons, context, intentions, or care behind {aboutName}'s actions, and what they wished {forName} understood.
-2. Set aside anything that's just venting, unflattering remarks about {forName}'s character, gossip, or things said in pure frustration. Do not include those.
-3. Then write the note.
+You will be given TWO raw transcripts of private video conversations:
+1. ABOUT — what {aboutName} said to you.
+2. SELF — what {forName} said to you (use ONLY to find common ground; never quote or summarize {forName}'s side back to them).
 
-Rules for the note:
-- 3-5 sentences, plain language. No headings, no bullets, no preamble, no quotes around it.
-- Sound like a caring mutual friend explaining context — never like a report or transcript.
-- Never quote {aboutName} verbatim. Paraphrase. Soften, don't sharpen. Never blame either person.
-- Focus on the *why* and the underlying care or intention that may not have been visible to {forName}.
-- Explicitly include what {aboutName} said they want to happen or how they'd like to resolve things — for example, 'they mentioned hoping that...' — framed as neutral shared context for {forName} to consider, not as advice or a recommended resolution.
-- End with one warm, open-ended sentence — something like "What you do with this is up to you both."
+Do this silently in one pass:
+- From ABOUT, decide what's actually fair and relevant for {forName} to hear — the reasons, context, intentions, or care behind {aboutName}'s actions, and what they wished {forName} understood. Set aside venting, character attacks, gossip, or things said in pure frustration.
+- From ABOUT, identify what {aboutName} said would resolve this for them (their answer to "what would you like to happen / what are you hoping for").
+- From SELF, identify what {forName} said would resolve this for them.
+- Compare the two desired resolutions and find genuine overlap or shared underlying want, in their OWN words/intentions. Do not invent a resolution neither person mentioned. If there is no honest overlap, gently note that instead of forcing one.
 
-If the transcript is empty, only a sentence or two, or doesn't contain anything meaningful to pass along, do NOT fabricate. Instead return a single short, graceful line such as: "{aboutName} didn't get to share much this time — there may not be much to pass along yet."
+Then write the note with this shape (plain prose, no headings, no bullets, no preamble, no quotes around it, 4-6 sentences total):
+- Open with the *why* — the reasoning and care behind what {aboutName} did, framed gently, never blaming either person. Paraphrase, never quote verbatim.
+- Include what {aboutName} said they'd like to happen, framed as neutral shared context (e.g. "they mentioned hoping that..."), not as advice.
+- Close by naming the common ground between what both of you said you want — reflect the overlap back in their own intentions (e.g. "You both actually want the same basic thing here — X. That's not something you're on opposite sides about."). If there isn't clear overlap, say so gently (e.g. "You're each hoping for something a little different, and that's okay to know going in."). Never prescribe a solution; only reflect what they each said.
+
+If the ABOUT transcript is empty or has nothing meaningful, return a single graceful line such as: "{aboutName} didn't get to share much this time — there may not be much to pass along yet."
 
 Return plain text only.`;
 
@@ -120,19 +123,20 @@ export const keeperSummary = createServerFn({ method: "POST" })
       .replaceAll("{forName}", data.forName)
       .replaceAll("{aboutName}", data.aboutName);
 
-    const transcript = data.transcript.trim();
+    const about = data.aboutTranscript.trim();
+    const self = data.selfTranscript.trim();
+
+    const userContent = about
+      ? `ABOUT — raw transcript of what ${data.aboutName} said to Keeper:\n\n${about}\n\n---\n\nSELF — raw transcript of what ${data.forName} said to Keeper (for finding common ground only):\n\n${self || "(empty)"}`
+      : `(${data.aboutName} did not share anything in their session — their transcript is empty.)`;
 
     const text = await chat({
       model: MODEL,
       messages: [
         { role: "system", content: sys },
-        {
-          role: "user",
-          content: transcript
-            ? `Raw transcript of what ${data.aboutName} said to Keeper:\n\n${transcript}`
-            : `(${data.aboutName} did not share anything in their session — the transcript is empty.)`,
-        },
+        { role: "user", content: userContent },
       ],
     });
     return text.trim();
   });
+

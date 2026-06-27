@@ -44,9 +44,11 @@ function Summary() {
           data: {
             forName: selfState.name,
             aboutName: otherState.name,
-            transcript: otherState.transcript ?? "",
+            aboutTranscript: otherState.transcript ?? "",
+            selfTranscript: selfState.transcript ?? "",
           },
         });
+
         if (!mounted) return;
         const next = { ...s, summary: { for: who, text } as const };
         saveState(next);

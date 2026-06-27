@@ -10,34 +10,40 @@ export const Route = createFileRoute("/who")({
 
 function Who() {
   const navigate = useNavigate();
-  const [nameA, setNameA] = useState("Person A");
-  const [nameB, setNameB] = useState("Person B");
+  const [nameA, setNameA] = useState("");
+  const [nameB, setNameB] = useState("");
   const [doneA, setDoneA] = useState(false);
   const [doneB, setDoneB] = useState(false);
 
   useEffect(() => {
     const s = loadState();
-    setNameA(s.A.name);
-    setNameB(s.B.name);
+    // Only hydrate if the user has previously set a real name (not the default placeholder)
+    setNameA(s.A.name && s.A.name !== "Person A" ? s.A.name : "");
+    setNameB(s.B.name && s.B.name !== "Person B" ? s.B.name : "");
     setDoneA(s.A.done);
     setDoneB(s.B.done);
   }, []);
 
   function start(speaker: Speaker) {
     const s = loadState();
-    s.A.name = nameA.trim() || "Person A";
-    s.B.name = nameB.trim() || "Person B";
+    // Each person's name is set independently — never overwrite the other's name here.
+    if (speaker === "A") {
+      s.A.name = nameA.trim() || "Person A";
+    } else {
+      s.B.name = nameB.trim() || "Person B";
+    }
     saveState(s);
     navigate({ to: "/talk", search: { who: speaker } });
   }
 
   function startFresh() {
     resetState();
-    setNameA("Person A");
-    setNameB("Person B");
+    setNameA("");
+    setNameB("");
     setDoneA(false);
     setDoneB(false);
   }
+
 
   return (
     <main className="min-h-screen flex items-center justify-center px-6 py-12">
@@ -119,8 +125,9 @@ function PersonCard({
         <input
           value={name}
           onChange={(e) => onName(e.target.value)}
-          className="mt-1 w-full bg-transparent text-lg font-display font-medium outline-none"
-          aria-label="Your name"
+          placeholder={accent === "coral" ? "your name" : "your name"}
+          className="mt-1 w-full bg-transparent text-lg font-display font-medium outline-none placeholder:text-foreground/30"
+          aria-label={accent === "coral" ? "Person A name" : "Person B name"}
           autoComplete="off"
           name={accent === "coral" ? "personAName" : "personBName"}
         />
@@ -129,6 +136,7 @@ function PersonCard({
       <button
         onClick={onStart}
         className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-500 hover:scale-[1.03] ${btn}`}
+
       >
         {done ? "talk again" : "start"}
       </button>

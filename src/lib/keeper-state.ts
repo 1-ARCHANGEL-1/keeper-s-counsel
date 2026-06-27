@@ -17,7 +17,9 @@ export interface PersonState {
   turns: KeeperTurn[];
   done: boolean;
   transcript?: string;
+  sessionCount: number;
 }
+
 
 export interface KeeperState {
   A: PersonState;
@@ -28,16 +30,23 @@ export interface KeeperState {
 const KEY = "keeper:state:v1";
 
 const initial: KeeperState = {
-  A: { name: "Person A", turns: [], done: false },
-  B: { name: "Person B", turns: [], done: false },
+  A: { name: "Person A", turns: [], done: false, sessionCount: 0 },
+  B: { name: "Person B", turns: [], done: false, sessionCount: 0 },
 };
+
 
 export function loadState(): KeeperState {
   if (typeof window === "undefined") return initial;
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return initial;
-    return { ...initial, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    return {
+      ...initial,
+      ...parsed,
+      A: { ...initial.A, ...(parsed.A ?? {}) },
+      B: { ...initial.B, ...(parsed.B ?? {}) },
+    };
   } catch {
     return initial;
   }

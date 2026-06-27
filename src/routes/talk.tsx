@@ -48,6 +48,9 @@ function Talk() {
       try {
         const r = await startFn();
         conversationIdRef.current = r.conversation_id;
+        // bump session count for this person
+        const s = loadState();
+        updatePerson(who, { sessionCount: (s[who].sessionCount ?? 0) + 1 });
         setConversationUrl(r.conversation_url);
         setStatus("live");
       } catch (e) {
@@ -72,6 +75,7 @@ function Talk() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
   async function done() {
     setStatus("ending");
     const id = conversationIdRef.current;
@@ -90,14 +94,17 @@ function Talk() {
         console.error("transcript fetch failed", e);
       }
     }
-    updatePerson(who, { done: true, transcript: transcriptText });
+    const prev = loadState()[who];
+    const merged = (prev.transcript ? prev.transcript + "\n\n---\n\n" : "") + transcriptText;
+    updatePerson(who, { done: true, transcript: merged });
     const s = loadState();
     if (s.A.done && s.B.done) {
       navigate({ to: "/summary", search: { who } });
     } else {
-      navigate({ to: "/who" });
+      navigate({ to: "/waiting", search: { who } });
     }
   }
+
 
   return (
     <main className="min-h-screen flex flex-col items-center px-6 py-6">
