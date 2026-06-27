@@ -16,6 +16,7 @@ export interface PersonState {
   name: string;
   turns: KeeperTurn[];
   done: boolean;
+  transcript?: string;
 }
 
 export interface KeeperState {
