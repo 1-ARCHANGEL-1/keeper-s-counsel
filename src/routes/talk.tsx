@@ -21,7 +21,8 @@ const OPENERS: Record<Speaker, string> = {
 };
 
 function Talk() {
-  const { who } = Route.useSearch();
+  const search = Route.useSearch();
+  const who = search.who as Speaker;
   const navigate = useNavigate();
   const reply = useServerFn(keeperReply);
 

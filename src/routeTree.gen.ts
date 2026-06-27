@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhoRouteImport } from './routes/who'
+import { Route as TalkRouteImport } from './routes/talk'
 import { Route as IndexRouteImport } from './routes/index'
 
 const WhoRoute = WhoRouteImport.update({
   id: '/who',
   path: '/who',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TalkRoute = TalkRouteImport.update({
+  id: '/talk',
+  path: '/talk',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,27 +31,31 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/talk': typeof TalkRoute
   '/who': typeof WhoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/talk': typeof TalkRoute
   '/who': typeof WhoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/talk': typeof TalkRoute
   '/who': typeof WhoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/who'
+  fullPaths: '/' | '/talk' | '/who'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/who'
-  id: '__root__' | '/' | '/who'
+  to: '/' | '/talk' | '/who'
+  id: '__root__' | '/' | '/talk' | '/who'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TalkRoute: typeof TalkRoute
   WhoRoute: typeof WhoRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/who'
       fullPath: '/who'
       preLoaderRoute: typeof WhoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/talk': {
+      id: '/talk'
+      path: '/talk'
+      fullPath: '/talk'
+      preLoaderRoute: typeof TalkRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TalkRoute: TalkRoute,
   WhoRoute: WhoRoute,
 }
 export const routeTree = rootRouteImport
