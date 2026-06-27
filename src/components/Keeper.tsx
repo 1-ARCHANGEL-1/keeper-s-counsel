@@ -228,7 +228,7 @@ transition: "transform 500ms ease",
 
     d="M 18 13 Q 50 27 82 13"
 
-    stroke="currentColor"
+    stroke="var(--coral)"
 
     strokeWidth="5"
 
@@ -236,7 +236,7 @@ transition: "transform 500ms ease",
 
     fill="none"
 
-    className="text-foreground/80"
+    style={{ filter: "drop-shadow(0 0 5px color-mix(in oklab, var(--coral) 70%, transparent))" }}
 
   />
 
