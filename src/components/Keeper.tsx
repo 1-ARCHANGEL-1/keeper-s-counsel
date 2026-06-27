@@ -152,11 +152,15 @@ boxShadow: `0 20px 60px -20px ${p.glow}, inset -10px -20px 40px -10px color-mix(
 
 <span
 
-className="absolute rounded-full bg-foreground/85"
+className="absolute rounded-full"
 
 style={{
 
 width: eyeSize, height: eyeSize,
+
+background: "var(--coral)",
+
+boxShadow: "0 0 8px color-mix(in oklab, var(--coral) 70%, transparent), 0 0 4px color-mix(in oklab, white 60%, transparent)",
 
 left: cx - size * eyeGap - eyeSize / 2,
 
@@ -172,11 +176,15 @@ transition: "transform 500ms ease",
 
 <span
 
-className="absolute rounded-full bg-foreground/85"
+className="absolute rounded-full"
 
 style={{
 
 width: eyeSize, height: eyeSize,
+
+background: "var(--coral)",
+
+boxShadow: "0 0 8px color-mix(in oklab, var(--coral) 70%, transparent), 0 0 4px color-mix(in oklab, white 60%, transparent)",
 
 left: cx + size * eyeGap - eyeSize / 2,
 
@@ -220,7 +228,7 @@ transition: "transform 500ms ease",
 
     d="M 18 13 Q 50 27 82 13"
 
-    stroke="currentColor"
+    stroke="var(--coral)"
 
     strokeWidth="5"
 
@@ -228,7 +236,7 @@ transition: "transform 500ms ease",
 
     fill="none"
 
-    className="text-foreground/80"
+    style={{ filter: "drop-shadow(0 0 5px color-mix(in oklab, var(--coral) 70%, transparent))" }}
 
   />
 
